@@ -1,0 +1,218 @@
+---
+title: "SQL Queries - Session 1"
+author: "Oscar Rodriguez de Rivera"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Introduction
+
+
+SQL is a database query language - a language designed specifically for interacting with a database. It offers syntax for extracting data, updating data, replacing data, creating data, etc. For our purposes, it will typically be used when accessing data off a server database. If the database isn't too large, you can grab the entire data set and stick it in a data.frame. However, often the data are quite large so you interact with it piecemeal via SQL.
+
+There are various database implementations (SQLite, Microsoft SQL Server, PostgreSQL, etc) which are database management software which use SQL to access the data. The method of connecting with each database may differ, but they support SQL (specifically they support ANSI SQL) and often extend it in subtle ways. This means that in general, SQL written to access a SQLite database may not work to access a PostgreSQL database.
+
+```{r}
+library(sqldf)
+?Orange
+```
+
+```{r}
+sqldf('SELECT age, circumference FROM Orange WHERE Tree = 1 ORDER BY circumference ASC')
+```
+
+### SQL Queries
+
+
+There are a large number of SQL major commands1. Queries are accomplished with the `SELECT` command. First a note about convention:
+
+The basic syntax for `SELECT` is
+
+`SELECT variable1, variable2 FROM data`
+
+By convention, SQL syntax is written in all UPPER CASE and variable names/database names are written in lower case. Technically, the SQL syntax is case insensitive, so it can be written in lower case or otherwise. Note however that R is not case insensitive, so variable names and data frame names must have proper capitalization. Hence
+
+```{r}
+sqldf("SELECT * from iris")
+```
+
+For example,
+
+```{r}
+data(BOD)
+BOD
+```
+
+```{r}
+sqldf('SELECT demand FROM BOD')
+```
+
+```{r}
+sqldf('SELECT Time, demand from BOD')
+```
+
+A quick sidenote: SQL does not like variables with . in their name. If you have any, refer to the variable wrapped in quotes, such as
+
+```{r eval=FALSE, include=TRUE}
+iris1 <- sqldf('SELECT Petal.Width FROM iris')
+```
+
+```{r}
+iris2 <- sqldf('SELECT "Petal.Width" FROM iris')
+```
+
+```{r}
+iris2
+```
+
+#### Wildcard
+
+
+A wild card can be passed to extract everything.
+
+```{r}
+bod2 <- sqldf('SELECT * FROM BOD')
+bod2
+```
+
+#### LIMIT
+
+To control the number of results returned, use `LIMIT #`.
+
+```{r}
+sqldf('SELECT * FROM iris LIMIT 5')
+```
+
+#### ORDER BY
+
+
+To order variables, use the syntax
+
+`ORDER BY var1 {ASC/DESC}, var2 {ASC/DESC}`
+
+where the choice of `ASC` for ascending or `DESC` for descending is made per variable.
+
+```{r}
+sqldf("SELECT * FROM Orange ORDER BY age ASC, circumference DESC LIMIT 5")
+```
+
+#### WHERE
+
+
+Conditional statements can be added via `WHERE`:
+
+```{r}
+sqldf('SELECT demand FROM BOD WHERE Time < 3')
+```
+
+Both `AND` and `OR` are valid, along with paranthese to affect order of operations.
+
+```{r}
+sqldf('SELECT * FROM rock WHERE (peri > 5000 AND shape < .05) OR perm > 1000')
+```
+
+There are few more complicated ways to use `WHERE`:
+
+#### IN
+
+
+`WHERE IN` is used similar to R's %in%. It also supports NOT.
+
+```{r}
+sqldf('SELECT * FROM BOD WHERE Time IN (1,7)')
+```
+
+```{r}
+sqldf('SELECT * FROM BOD WHERE Time NOT IN (1,7)')
+```
+
+#### LIKE
+
+
+`LIKE` can be thought of as a weak regular expression command. It only allows the single wildcard `%` which matches any number of characters. For example, to extract the data where the feed ends with "bean":
+
+```{r}
+sqldf('SELECT * FROM chickwts WHERE feed LIKE "%bean" LIMIT 5')
+```
+
+```{r}
+sqldf('SELECT * FROM chickwts WHERE feed NOT LIKE "%bean" LIMIT 5')
+```
+
+#### Aggregated data
+
+
+Select statements can create aggregated data using `AVG`, `MEDIAN`, `MAX`, `MIN`, and `SUM` as functions in the list of variables to select. The `GROUP BY` statement can be added to aggregate by groups. `AS` can name the
+
+```{r}
+sqldf("SELECT AVG(circumference) FROM Orange")
+```
+
+```{r}
+sqldf("SELECT tree, AVG(circumference) AS meancirc FROM Orange GROUP BY tree")
+```
+
+#### Counting data
+
+
+`SELECT COUNT()` returns the number of observations. Passing `*` or nothing returns total rows, passing a variable name returns the number of non-NA entries. `AS` works as well.
+
+```{r}
+d <- data.frame(a = c(1,1,1), b = c(1,NA,NA))
+d
+```
+
+```{r}
+sqldf("SELECT COUNT() as numrows FROM d")
+```
+
+```{r}
+sqldf("SELECT COUNT(b) FROM d")
+```
+
+### More complex queries
+
+```{r}
+library("dbplyr")
+library("RSQLite")
+dir.create("data_raw", showWarnings = FALSE)
+download.file(url = "https://ndownloader.figshare.com/files/2292171",
+              destfile = "data_raw/portal_mammals.sqlite", mode = "wb")
+```
+
+#### Challenge I
+
+
+Write a query that returns the number of rodents observed in each plot in each year.
+
+Hint: Connect to the species table and write a query that joins the species and survey tables together to exclude all non-rodents. The query should return counts of rodents by year.
+
+```{r eval=FALSE, include=TRUE}
+## with SQL syntax
+query <- paste("
+SELECT a.year, b.taxa,count(*) as count
+FROM surveys a
+JOIN species b
+ON a.species_id = b.species_id
+AND b.taxa = 'Rodent'
+GROUP BY b.taxa, a.year, a.plot_id",
+sep = "" )
+
+tbl(mammals, sql(query))
+```
+
+```{r eval=FALSE, include=TRUE}
+## with dplyr syntax
+species <- tbl(mammals, "species")
+
+left_join(surveys, species) %>%
+  filter(taxa == "Rodent") %>%
+  group_by(taxa, year, plot_id) %>%
+  tally() %>%
+  collect()
+```

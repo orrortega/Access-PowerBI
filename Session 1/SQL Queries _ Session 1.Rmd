@@ -185,6 +185,11 @@ download.file(url = "https://ndownloader.figshare.com/files/2292171",
               destfile = "data_raw/portal_mammals.sqlite", mode = "wb")
 ```
 
+```{r}
+src_dbi(mammals)
+```
+
+
 #### Challenge I
 
 

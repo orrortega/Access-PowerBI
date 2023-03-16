@@ -1,0 +1,198 @@
+\usepackage[a4paper, total={7in, 10in}]{geometry}
+\usepackage{graphicx} % Required for inserting images
+
+\title{Access exercises I}
+\author{ }
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Understanding Databases}
+
+Open the Access database \textbf{Student Records 1.accdb} for these exercises
+\begin{enumerate}
+
+   \item Open the \textbf{Students} table in datasheet view and enter the following new student either by
+navigating to the empty field or using the 'New record' button. Note the pencil symbol when
+editing:\\
+
+
+\begin{tabular}{ l l l l}
+\textbf{studentID} & \textbf{forename} & \textbf{surname} & \textbf{email} \\ 
+10510 & Paul & Hitch & p.hitch@gmail.co.uk \\      
+\end{tabular}\\
+
+
+   \item Enter yourself as a new student. Save by moving to a different record or using the Save button.
+   
+If you left the \textbf{studentID} field empty you will receive a warning message. This is because \textbf{studentID} is the primary key and must be included in any record.
+
+Either enter a made-up \textbf{studentID} (10505) or delete the record.
+  
+   \item Find student number \textbf{10330}, Tara Maples. Correct her email to \textbf{yahoo.com}.
+   \item Close \textbf{Students} and open the \textbf{Modules} table. Find the Plasma Physics module (\textbf{moduleID PHY201}) and set the \textbf{roomID} to G/A/114.
+   \item Correct the spelling of POL103 to 'War and Peace'.
+\end{enumerate}
+
+\textbf{Extension}
+
+\begin{enumerate}
+\setcounter{enumi}{5}
+    \item Prof Leo Richards is the new tutor for the module CSC203, AJAX Development. Locate his
+TutorID (\textbf{Tutors} table) and update the tutorID for this module in the \textbf{Modules} table.
+    \item Joseph Smith has received a mark of 79 in Nuclear Chemistry. Enter this into the \textbf{ModuleChoices} table.
+
+\end{enumerate}
+
+\section{Query Essentials}
+
+Continue using the Access database \textbf{Student Records 1.accdb} for these exercises
+
+\begin{enumerate}
+
+    \item Create a new query in Design view. Add the \textbf{Students} table. You may want to resize the table so you can see all the fields listed.
+    
+Add \textbf{studentID}, \textbf{forename} and \textbf{surname} to the grid.
+
+(Try using both the double-click and drag-and-drop methods and see which you prefer)
+
+    \item Use the View button to switch to Datasheet view. Find student 10091 and correct her name to Suzy Watson.
+    
+\textbf{Note}: Even though queries do not store data, the results of a query are from the underlying table, and a change made here is changing the data stored within the table.)
+    
+    \item Switch back to Design view. Apply a Sort to order surnames alphabetically and check the
+results in the datasheet view.
+    \item Amend your query to sort first by surname, then by forename.
+    
+(Hint: Access applies sort orders from left to right. You will need the surname field to appear first in the Query By Example grid)
+
+    \item The field \textbf{currentYear} indicates the year of study of students. Add \textbf{currentYear} to your query and apply a filter to only show only 1st years.
+    \item Modify the query to only show 1st years with a surname “Jones”
+    \item Save the query as \textbf{qryFirstYears}
+    \item Create a new query based on the \textbf{Students} table that will show the names and ID of all female 2nd year students.
+    \item Edit the query design to show female 2nd year students with the surname “Chapman”.
+    \item Save the query as \textbf{qrySecondYears}
+\end{enumerate}
+
+\textbf{Extension}
+
+\begin{enumerate}
+\setcounter{enumi}{10}
+    \item Create a new query that will display the studentID, name and date of birth for all students born on 26/09/1995.
+
+    \item Modify the query to find students born in 1995 (ie between 01/01/1995 and 31/12/1995).
+
+Hint: See Conditions, ranges and wildcards
+
+    \item Modify the query again to only show 1st years born in 1995. Also include their email address and sort by surname.
+    \item Save the query as \textbf{qryDob}
+    \item Create a query to show all 2nd and 3rd year students.
+    \item Save the query as \textbf{qrySecondAndThirdYears}
+
+\end{enumerate}
+
+\subsection{Multi-table queries}
+
+Continue using the Access database \textbf{Student Records 1.accdb} for these exercises.
+\begin{enumerate}
+    \item We want to view information about the modules the students are taking. This will require data from two related tables, Students and ModuleChoices. Both tables contain studentID fields which are linked with a 1-to-many relationship.
+
+Create a new query and add only the \textbf{Students} table. Add \textbf{studentID} and both name fields; view the datasheet.
+
+    \item Add the table \textbf{ModuleChoices} and view the datasheet again.
+
+There are about 3 times as many results as before. This is because each student studies several modules and is listed once for each module they take.
+
+Add the \textbf{moduleID} field and view the datasheet again to see the different modules each
+student is taking.
+
+    \item Return to the design and filter the results to show details for \textbf{studentID} 10175. (David McDonald).
+    \item It would be helpful to see the module titles, and you may also need to view other module information. To do this we need to add a third table to our query.
+
+Add the \textbf{Modules} table to the design and include the \textbf{moduleName} and \textbf{credits} fields.
+
+View the datasheet again.
+    \item Clear the studentID from the criteria and save the query as \textbf{qryModules}.
+\end{enumerate}
+
+\textbf{Extension}
+
+\begin{enumerate}
+\setcounter{enumi}{5}
+    \item Create a new query that will list each module and the tutor who teaches it. Show the module ID, module name and term along with the Tutor’s ID, full name and email. (44)
+    \item Modify the design to display only History modules.
+
+Hint: Use wildcards to find only the modules with IDs which start with HIS.
+
+    \item Modify the query to show all modules again. Add the room ID and capacity. You will need to add a 3rd table to do this
+    \item Why do you think adding the rooms table to the query has reduced the number of records
+returned? Looking carefully at the Modules table may help.
+    \item Modify your query to show the college that the rooms are in.
+    \item Save the query with a suitable name.
+\end{enumerate}
+
+\section{Editing Table Design}
+\subsection{Task Design}
+Open the Access database \textbf{Student Records 2.accdb} for these exercises.
+\begin{enumerate}
+    \item Open the \textbf{Modules} table in design view. Examine the fields in this table, paying attention to the data type of each, and the different field properties available.
+    \item Set the field size of \textbf{moduleID} to prevent codes longer than 6 characters from being entered.
+    \item The \textbf{departmentID} is always a 3 character code. Change the field size, and format it to always display in \underline{uppercase}.
+    \item Some modules are compulsory for all students. Add a new field called \textbf{compulsory} with \textbf{Yes/No} data type to record this. Set the default value to \textbf{Yes}.
+    \item There are never more than 100 credits awarded for a module. Adjust the number field size to \underline{the most appropriate type}. Set a validation rule to prevent entries higher than 100 and enter suitable validation text.
+    \item Add a new field \textbf{modCreated} to record the date a new module is entered into the database. Format as Short Date and set the default value to be the current date. 
+    \item Add a new field \textbf{tutorID} to store which tutor takes this module. Set as \textbf{Long Integer}.
+    \item Save your changes to the table design and switch to datasheet view. Pay attention to the warning messages. Enter an imaginary new module. Try entering:
+\begin{itemize}
+    \item a \textbf{departmentID} longer than 3 characters
+    \item \textbf{credits} greater than 100
+    \item The changes you made should prevent this. You should see your default values in the \textbf{modCreated} and \textbf{compulsory} fields.
+\end{itemize}
+\end{enumerate}
+\textbf{A new table}
+\begin{enumerate}
+\setcounter{enumi}{8}
+    \item Create a new table in design view called \textbf{Tutors}. Add the following fields:
+
+\begin{tabular}{ |l|l|l|} \hline
+\textbf{Field Name} & \textbf{Data Type} & \textbf{Field properties}\\ \hline
+tutorID & AutoNumber & Primary Key\\ \hline
+title & Short Text & field size 10\\ \hline
+firstName & Short Text & field size 50\\ \hline
+lastName & Short Text & field size 50\\ \hline
+dateOfBirth & Date/Time & format as short date\\ \hline
+\end{tabular}
+
+    \item Switch to datasheet view and enter a new tutor. Note \textbf{tutorID} is automatically completed when you start entering data in any other fields.
+\end{enumerate}
+
+\subsection{Relationships}
+
+Use the Access database \textbf{Student Records 3.accdb} for these exercises.
+
+\begin{enumerate}
+    \item Open the \textbf{Relationships} window from the Database Tools tab. This isn’t currently showing all tables in the database. Add the \textbf{Departments} and \textbf{Tutors} tables.
+    \item Create a relationship between \textbf{tutorID} (Tutors table) and \textbf{tutorID} (Modules table) and enforce referential integrity.
+    \item Create a relationship between \textbf{deptID} (Departments table) and \textbf{departmentID} (Modules table) and enforce referential integrity. Close the Relationship window, saving the changes.
+    \item The Politics department have changed and are now the department of Politics, Economics and Philosophy.
+
+Open the Departments table in Datasheet view and attempt to change deptID from POL to PEP. If you set up the relationship correctly you will receive an error.
+
+(Note: This is because there are related records in the Modules table that have the department code POL. These records would become ‘orphaned’ if the corresponding POL name was changed in the Departments table.)
+
+Use ‘Esc’ to undo the update.
+
+    \item Attempt to delete the Politics department. This will also fail for similar reasons. Close the table.
+    \item Open the \textbf{Relationships} window. Modify the relationship between Modules and Departments to \textbf{Cascade Update} and \textbf{Cascade Delete}. Close the window.
+    \item Open the \textbf{Departments} table and attempt to change POL to PEP again. You should receive no errors. Open the Modules table. Politics modules will now show this new PEP department code.
+
+(Note: This is due to the ‘Cascade updates’ option)
+   
+    \item Return to the \textbf{Departments} table and delete the Politics department. You will receive a warning that because of the cascade delete this will not only delete Politics from the departments table but also delete all related records in other tables. Choose \textbf{Yes} and return to the modules table to confirm that all Politics modules have now gone.
+
+(Note: cascade delete should be used very carefully)
+
+\end{enumerate}
+\end{document}
